@@ -6,8 +6,10 @@ class User(AbstractUser):
         MANAGER = "MANAGER" , "Manager"
         TEAM_LEADER = "TEAM_LEADER" , "Team Leader"
         DEVELOPER = "DEVELOPER" , "Developer"
-
+    username = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
+    password = models.CharField(max_length=255)
+
     team_leader = models.ForeignKey(
         "self",
         on_delete = models.SET_NULL,
@@ -19,4 +21,5 @@ class User(AbstractUser):
         max_length=20,
         choices=Role.choices
     )
+    
     
