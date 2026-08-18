@@ -1,49 +1,64 @@
 from ..models import User
+
 class UserRepository():
 
+    @staticmethod
+    def get_employee_by_id(user_id):
+        return User.objects.filter(id = user_id).first()
 
-    def get_employee_by_id(self , id):
-        return User.objects.filter(id = id).first()
-
-    def get_employee_by_username(self , username):
+    @staticmethod
+    def get_employee_by_username(username):
         return User.objects.filter(username = username).first()
 
-    def get_employee_by_email(self , email):
-        return User.objects.filter(email = email).first()
+    @staticmethod
+    def get_employee_by_email(email):
+        return User.objects.filter(email__iexact = email).first()
 
-    def get_all_employees(self):
+    @staticmethod
+    def get_all_employees():
         return User.objects.all()
 
-    def get_team_leaders(self):
+    @staticmethod
+    def get_team_leaders():
         return User.objects.filter(
-            role = User.role.TEAM_LEADER,
+            role = User.Role.TEAM_LEADER,
             is_active=True
         )
 
-
-    def get_employees_by_team_leader(self , team_leader):
+    @staticmethod
+    def get_employees_by_team_leader(team_leader):
         return User.objects.filter(
-            role=User.role.DEVELOPER,
+            role=User.Role.DEVELOPER,
             team_leader = team_leader,
             is_active=True
             )
 
-
-    def create_employee(self , **data):
+    @staticmethod
+    def create_employee(**data):
         user = User.objects.create_user(**data)
         return user
 
+    @staticmethod
+    def update_employee(user, **data):
+        password = data.pop("password", None)
 
-    # def update_employee(self , obj):
-    #     user = User.objects.update()
-    #     return user
+        for field, value in data.items():
+            setattr(user, field, value)
 
-    def deactivate_employee(self, user):
+        if password:
+            user.set_password(password)
+
+        user.save()
+        return user
+
+    @staticmethod
+    def deactivate_employee(user):
         user.is_active = False
         user.save(update_fields=["is_active"])
+        return user
         
-
-    def email_exists(self, email):
+    @staticmethod
+    def email_exists(email):
         return User.objects.filter(email__iexact=email).exists()
 
 

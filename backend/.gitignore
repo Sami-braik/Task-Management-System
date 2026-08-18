@@ -23,4 +23,3 @@ media/
 .env.*
 !.env.example
 backend/.env
-backend/Task_management/apps/users/repositories
